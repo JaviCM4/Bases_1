@@ -27,8 +27,6 @@ ORDER BY
 
 
 
-
-
 -- (2)¿Cuáles son los 5 equipos con mayor cantidad de puntos obtenidos jugando como visitantes?
 SELECT 
     e.nombre AS nombre_equipo,
@@ -39,15 +37,20 @@ SELECT
             ELSE 0  -- Derrota
         END
     ) AS puntos_visitante
-FROM Equipo_participante ep
-JOIN Equipo e ON ep.id_equipo = e.id
-JOIN Partido p ON ep.id_partido = p.id
-JOIN Condicion c ON ep.id_condicion = c.id
-WHERE c.nombre = 'Visitante'
-GROUP BY e.nombre
-ORDER BY puntos_visitante DESC
-
-
+FROM 
+    Equipo_participante ep
+JOIN 
+    Equipo e ON ep.id_equipo = e.id
+JOIN 
+    Partido p ON ep.id_partido = p.id
+JOIN 
+    Condicion c ON ep.id_condicion = c.id
+WHERE 
+    c.nombre = 'Visitante'
+GROUP BY 
+    e.nombre
+ORDER BY 
+    puntos_visitante DESC
 
 
 
@@ -55,12 +58,14 @@ ORDER BY puntos_visitante DESC
 SELECT 
     e.nombre AS nombre_equipo,
     ROUND(AVG(ep.posesion), 2) AS posesion_promedio
-FROM Equipo_participante ep
-JOIN Equipo e ON ep.id_equipo = e.id
-GROUP BY e.nombre
-ORDER BY posesion_promedio DESC
-
-
+FROM 
+    Equipo_participante ep
+JOIN 
+    Equipo e ON ep.id_equipo = e.id
+GROUP BY 
+    e.nombre
+ORDER BY 
+    posesion_promedio DESC
 
 
 
@@ -82,8 +87,6 @@ GROUP BY
     p.apellido 
 ORDER BY
     goles_recibidos DESC;
-
-
 
 
 
@@ -111,8 +114,6 @@ HAVING
     SUM(c.minutos) > 500
 ORDER BY
     goles_promedio ASC;
-
-
 
 
 
@@ -144,8 +145,6 @@ ORDER BY
 
 
 
-
-
 -- (7)¿Qué jugador ha recibido más tarjetas amarillas y en qué equipo juega?
 SELECT
     p.primer_nombre,
@@ -172,8 +171,6 @@ GROUP BY
     e.nombre
 ORDER BY
     numero_tarjetas DESC;
-
-
 
 
 
@@ -214,8 +211,6 @@ ORDER BY
 
 
 
-
-
 -- (9)¿Qué equipos tienen mejor diferencia de goles en los últimos 10 minutos de cada partido?
 SELECT 
     e.nombre,
@@ -237,8 +232,6 @@ GROUP BY
     e.nombre
 ORDER BY
     goles_partido_tarde DESC;
-
-
 
 
 
@@ -267,8 +260,6 @@ ORDER BY
 
 
 
-
-
 -- (11)¿Cuántos penales ha anotado cada equipo y cuál es su porcentaje de efectividad desde el punto penal?
 SELECT
     e.nombre,
@@ -292,8 +283,6 @@ ORDER BY
 
 
 
-
-
 -- (12)¿Cuántos puntos ha sumado un equipo?
 SELECT
     e.nombre,
@@ -306,8 +295,6 @@ WHERE
     t.ganados > 0 OR t.empates > 0
 ORDER BY
     punteo DESC;
-
-
 
 
 
@@ -334,8 +321,6 @@ ORDER BY
 
 
 
-
-
 -- (14)¿Qué equipos han tenido más posesión en partidos que terminaron en derrota?
 SELECT
     e.nombre,
@@ -351,19 +336,13 @@ ORDER BY
 
 
 
-
-
 -- (15)En base a la posesión, puede determinar un mapa de calor de esos equipos en toda la temporada
 -- Capturas en el Documento
 
 
 
-
-
 -- (16)En base a los goles anotados, puede generar un mapa de goles en base a algún jugador.
 -- Capturas en el Documento
-
-
 
 
 
@@ -382,8 +361,6 @@ ORDER BY
 
 
 
-
-
 -- (18)¿Qué equipos han tenido más posesión en partidos que terminaron en empate?
 SELECT
     e.nombre,
@@ -396,8 +373,6 @@ WHERE
     ep.id_resultado = 2
 ORDER BY
     punteo DESC;
-
-
 
 
 
@@ -430,8 +405,6 @@ ORDER BY
 
 
 
-
-
 -- (20)¿Cual es el equipo que utilizo una tactica de juego en especifico?
 SELECT
     e.nombre,
@@ -453,8 +426,6 @@ ORDER BY
 
 
 
-
-
 -- (21)¿Cúal es el equipo que más veces ganó de visita?
 SELECT
     e.nombre,
@@ -469,8 +440,6 @@ GROUP BY
     e.nombre
 ORDER BY
     victorias_visita DESC;
-
-
 
 
 
@@ -491,8 +460,6 @@ ORDER BY
 
 
 
-
-
 -- (23)¿Cúal es el equipo que más veces empato de visita?
 SELECT
     e.nombre,
@@ -507,8 +474,6 @@ GROUP BY
     e.nombre
 ORDER BY
     victorias_visita DESC;
-
-
 
 
 
@@ -529,8 +494,6 @@ ORDER BY
 
 
 
-
-
 -- (25)¿Cúal es el equipo que más veces perdio de local?
 SELECT
     e.nombre,
@@ -548,8 +511,6 @@ ORDER BY
 
 
 
-
-
 -- (26)¿Cúal es el equipo que más veces empato de local?
 SELECT
     e.nombre,
@@ -564,8 +525,6 @@ GROUP BY
     e.nombre
 ORDER BY
     victorias_visita DESC;
-
-
 
 
 
@@ -590,8 +549,6 @@ ORDER BY
 
 
 
-
-
 -- (28)¿Cuales son los jugadores que más veces empezaron de susprente?
 SELECT
     p.primer_nombre,
@@ -613,8 +570,6 @@ ORDER BY
 
 
 
-
-
 -- (29) ¿Cuál es el país de cada jugador?
 SELECT
     p.primer_nombre,
@@ -626,9 +581,6 @@ FROM
     Persona p
 JOIN 
     Pais ps ON p.id_pais = ps.id
-
-
-
 
 
 
