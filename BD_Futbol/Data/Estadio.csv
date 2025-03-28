@@ -1,0 +1,21 @@
+id,id_equipo,nombre,capacidad,direccion,ciudad
+1,1,Emirates Stadium,"60,704","Highbury House, 75 Drayton Park",Londres
+2,2,Villa Park,"42,918",Trinity Road,Birmingham
+3,3,Gtech Community Stadium,"17,25",166 Lionel Road North,"Brentford, Londres"
+4,4,American Express Stadium,"31,876",Village Way,Brighton
+5,5,Turf Moor,"21,944",Harry Potts Way,Burnley
+6,6,Stamford Bridge,"40,173",Fulham Road,Londres
+7,7,Selhurst Park,"25,486",Holmesdale Road,Londres
+8,8,Goodison Park,"39,414",Goodison Road,Liverpool
+9,9,Elland Road,"37,792",Elland Road,Leeds
+10,10,King Power Stadium,"32,261",Filbert Way,Leicester
+11,11,Anfield,"61,276",Anfield Road,Liverpool
+12,12,Etihad Stadium,"53,6",Ashton New Road,Manchester
+13,13,Old Trafford,"74,31",Sir Matt Busby Way,Manchester
+14,14,St James' Park,"52,305",Barrack Road,Newcastle upon Tyne
+15,15,Carrow Road,"27,244",Carrow Road,Norwich
+16,16,St Mary's Stadium,"32,384",Britannia Road,Southampton
+17,17,Tottenham Hotspur Stadium,"62,85",782 High Road,Londres
+18,18,Vicarage Road,"22,2",Vicarage Road,Watford
+19,19,London Stadium,60,"Queen Elizabeth Olympic Park, Stratford",Londres
+20,20,Molineux Stadium,"32,05",Waterloo Road,Wolverhampton

@@ -1,0 +1,11 @@
+id,nombre,code_dos,code_tres
+1,Portero,PT,POR
+2,Defensa Central,DF,DFC
+3,Lateral Derecho,LD,LD
+4,Lateral Izquierdo,LI,LI
+5,Mediocampista Defensivo,MC,MCD
+6,Mediocampista,MC,MC
+7,Mediocampista Ofensivo,MC,MCO
+8,Extremo Derecho,ED,ED
+9,Extremo Izquierdo,EI,EI
+10,Delantero Centro,DL,DLC

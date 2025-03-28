@@ -1,86 +1,83 @@
 -- Creación de Tablas para Base de Datos de Fútbol
 
--- (2) Estado_registro
+-- Tablas Independientes
+
+-- No hay Datos
 CREATE TABLE Estado_registro (
     id NUMBER(1) PRIMARY KEY,
     nombre VARCHAR2(50)
 );
 
--- (34) Tipo_tarjeta
 CREATE TABLE Tipo_tarjeta (
     id NUMBER(1) PRIMARY KEY,
     nombre VARCHAR2(25)
 );
 
--- (9) Pais
-CREATE TABLE Pais (
+CREATE TABLE Pais  (
     id NUMBER(3) PRIMARY KEY,
     nombre VARCHAR2(50),
     alpha_dos VARCHAR2(50),
     alpha_tres VARCHAR2(50)
 );
 
--- (10) Pie_dominante
 CREATE TABLE Pie_dominante (
     id NUMBER(1) PRIMARY KEY,
     nombre VARCHAR2(25)
 );
 
--- (15) Tipo_cuerpo_tecnico
+-- No hay Datos
 CREATE TABLE Tipo_cuerpo_tecnico (
     id NUMBER(1) PRIMARY KEY,
     nombre VARCHAR2(50)
 );
 
--- (17) Estado_Temporada
 CREATE TABLE Estado_Temporada (
     id NUMBER(1) PRIMARY KEY,
     nombre VARCHAR2(50)
 );
 
--- (22) Resultado
 CREATE TABLE Resultado (
     id NUMBER(1) PRIMARY KEY,
     nombre VARCHAR2(25)
 );
 
--- (23) Tactica
+CREATE TABLE Condicion (
+    id NUMBER(1) PRIMARY KEY,
+    nombre VARCHAR2(25)
+);
+
 CREATE TABLE Tactica (
     id NUMBER(2) PRIMARY KEY,
     nombre VARCHAR2(50)
 );
 
--- (24) Tipo_arbitro
+-- No hay Datos
 CREATE TABLE Tipo_arbitro (
     id NUMBER(1) PRIMARY KEY,
     nombre VARCHAR2(50)
 );
 
--- (29) Titular
 CREATE TABLE Titular (
     id NUMBER(1) PRIMARY KEY,
     nombre VARCHAR2(25)
 );
 
--- (35) Tipo_accion
 CREATE TABLE Tipo_accion (
     id NUMBER(2) PRIMARY KEY,
     nombre VARCHAR2(50)
 );
 
--- (37) Tipo_sustitucion
 CREATE TABLE Tipo_sustitucion (
     id NUMBER(1) PRIMARY KEY,
     nombre VARCHAR2(25)
 );
 
--- (6) Nivel_falta
+-- No hay Datos
 CREATE TABLE Nivel_falta (
     id NUMBER(1) PRIMARY KEY,
     nombre VARCHAR2(50)
 );
 
--- (8) Posicion
 CREATE TABLE Posicion (
     id NUMBER(2) PRIMARY KEY,
     nombre VARCHAR2(50),
@@ -88,13 +85,14 @@ CREATE TABLE Posicion (
     code_tres VARCHAR2(50)
 );
 
--- (14) Tipo_equipo
 CREATE TABLE Tipo_equipo (
     id NUMBER(1) PRIMARY KEY,
     nombre VARCHAR2(50)
 );
 
--- (20) Profesor
+------------------------------------------ Tablas con referencias simples -----------------------------------------
+
+-- No hay Datos
 CREATE TABLE Profesor (
     id NUMBER(7) PRIMARY KEY,
     id_pais NUMBER(3),
@@ -105,7 +103,6 @@ CREATE TABLE Profesor (
     FOREIGN KEY (id_pais) REFERENCES Pais(id)
 );
 
--- (3) Persona
 CREATE TABLE Persona (
     id NUMBER(7) PRIMARY KEY,
     id_pais_pasaporte NUMBER(7),
@@ -115,12 +112,12 @@ CREATE TABLE Persona (
     apellido VARCHAR2(50),
     altura NUMBER(4),
     peso NUMBER(4),
-    fecha_nacimiento DATE,
+    fecha_nacimiento NUMBER(4),
     FOREIGN KEY (id_pais_pasaporte) REFERENCES Pais(id),
     FOREIGN KEY (id_pais) REFERENCES Pais(id)
 );
 
--- (28) Arbitro
+-- No hay Datos
 CREATE TABLE Arbitro (
     id NUMBER(7) PRIMARY KEY,
     id_pais NUMBER(3),
@@ -131,7 +128,6 @@ CREATE TABLE Arbitro (
     FOREIGN KEY (id_pais) REFERENCES Pais(id)
 );
 
--- (11) Liga
 CREATE TABLE Liga (
     id NUMBER(3) PRIMARY KEY,
     id_pais NUMBER(3),
@@ -139,17 +135,15 @@ CREATE TABLE Liga (
     FOREIGN KEY (id_pais) REFERENCES Pais(id)
 );
 
--- (16) Temporada
 CREATE TABLE Temporada (
     id NUMBER(7) PRIMARY KEY,
     id_liga NUMBER(3),
     id_estado_temporada NUMBER(1),
-    año NUMBER(4),
+    fecha NUMBER(4),
     FOREIGN KEY (id_liga) REFERENCES Liga(id),
     FOREIGN KEY (id_estado_temporada) REFERENCES Estado_Temporada(id)
 );
 
--- (13) Equipo
 CREATE TABLE Equipo (
     id NUMBER(7) PRIMARY KEY,
     id_tipo_equipo NUMBER(1),
@@ -159,18 +153,16 @@ CREATE TABLE Equipo (
     FOREIGN KEY (id_tipo_equipo) REFERENCES Tipo_equipo(id)
 );
 
--- (12) Estadio
 CREATE TABLE Estadio (
     id NUMBER(7) PRIMARY KEY,
     id_equipo NUMBER(7),
     nombre VARCHAR2(75),
     capacidad NUMBER(5),
     direccion VARCHAR2(75),
-    cuidad VARCHAR2(75),
+    ciudad VARCHAR2(75),
     FOREIGN KEY (id_equipo) REFERENCES Equipo(id)
 );
 
--- (7) Jugador
 CREATE TABLE Jugador (
     id NUMBER(7) PRIMARY KEY,
     id_persona NUMBER(7),
@@ -185,7 +177,7 @@ CREATE TABLE Jugador (
     FOREIGN KEY (id_pie_dominante) REFERENCES Pie_dominante(id)
 );
 
--- (19) Cuerpo_tecnico
+-- No hay Datos
 CREATE TABLE Cuerpo_tecnico (
     id NUMBER(7) PRIMARY KEY,
     id_equipo NUMBER(7),
@@ -198,7 +190,7 @@ CREATE TABLE Cuerpo_tecnico (
     FOREIGN KEY (id_tipo_cuerpo_tecnico) REFERENCES Tipo_cuerpo_tecnico(id)
 );
 
--- (1) Lesion
+-- No hay Datos
 CREATE TABLE Lesion (
     id NUMBER(7) PRIMARY KEY,
     id_jugador NUMBER(7),
@@ -212,7 +204,7 @@ CREATE TABLE Lesion (
     FOREIGN KEY (id_estado_registro) REFERENCES Estado_registro(id)
 );
 
--- (5) Falta
+-- No hay Datos
 CREATE TABLE Falta (
     id NUMBER(7) PRIMARY KEY,
     id_jugador NUMBER(7),
@@ -223,7 +215,6 @@ CREATE TABLE Falta (
     FOREIGN KEY (id_nivel_falta) REFERENCES Nivel_falta(id)
 );
 
--- (26) Partido
 CREATE TABLE Partido (
     id NUMBER(7) PRIMARY KEY,
     id_temporada NUMBER(7),
@@ -234,7 +225,6 @@ CREATE TABLE Partido (
     FOREIGN KEY (id_estadio) REFERENCES Estadio(id)
 );
 
--- (18) Tabla_posicion
 CREATE TABLE Tabla_posicion (
     id NUMBER(7) PRIMARY KEY,
     id_temporada NUMBER(7),
@@ -250,31 +240,29 @@ CREATE TABLE Tabla_posicion (
     FOREIGN KEY (id_equipo) REFERENCES Equipo(id)
 );
 
--- (27) Convocado
 CREATE TABLE Convocado (
     id NUMBER(7) PRIMARY KEY,
     id_partido NUMBER(7),
-    id_jugador NUMBER(7),
+    id_persona NUMBER(7),
     id_titular NUMBER(1),
     minutos NUMBER(3),
     FOREIGN KEY (id_partido) REFERENCES Partido(id),
-    FOREIGN KEY (id_jugador) REFERENCES Jugador(id),
+    FOREIGN KEY (id_persona) REFERENCES Persona(id),
     FOREIGN KEY (id_titular) REFERENCES Titular(id)
 );
 
--- (31) Accion
 CREATE TABLE Accion (
     id NUMBER(7) PRIMARY KEY,
     id_partido NUMBER(7),
-    id_convocado NUMBER(7),
+    id_persona NUMBER(7),
     id_tipo_accion NUMBER(2),
     minuto NUMBER(3),
     FOREIGN KEY (id_partido) REFERENCES Partido(id),
-    FOREIGN KEY (id_convocado) REFERENCES Convocado(id),
+    FOREIGN KEY (id_persona) REFERENCES Persona(id),
     FOREIGN KEY (id_tipo_accion) REFERENCES Tipo_accion(id)
 );
 
--- (25) Asignacion_arbitro
+-- No hay Datos
 CREATE TABLE Asignacion_arbitro (
     id NUMBER(7) PRIMARY KEY,
     id_partido NUMBER(7),
@@ -285,21 +273,22 @@ CREATE TABLE Asignacion_arbitro (
     FOREIGN KEY (id_tipo_arbitro) REFERENCES Tipo_arbitro(id)
 );
 
--- (21) Equipo_participante
 CREATE TABLE Equipo_participante (
     id NUMBER(7) PRIMARY KEY,
     id_partido NUMBER(7),
     id_equipo NUMBER(7),
     id_tactica NUMBER(2),
     id_resultado NUMBER(1),
+    id_condicion NUMBER(1),
     posesion NUMBER(3),
     FOREIGN KEY (id_partido) REFERENCES Partido(id),
     FOREIGN KEY (id_equipo) REFERENCES Equipo(id),
     FOREIGN KEY (id_tactica) REFERENCES Tactica(id),
-    FOREIGN KEY (id_resultado) REFERENCES Resultado(id)
+    FOREIGN KEY (id_resultado) REFERENCES Resultado(id),
+    FOREIGN KEY (id_condicion) REFERENCES Condicion(id)
 );
 
--- (32) Coordenada_cancha
+-- No hay Datos
 CREATE TABLE Coordenada_cancha (
     id NUMBER(7) PRIMARY KEY,
     id_accion NUMBER(7),
@@ -308,7 +297,6 @@ CREATE TABLE Coordenada_cancha (
     FOREIGN KEY (id_accion) REFERENCES Accion(id)
 );
 
--- (33) Tarjeta
 CREATE TABLE Tarjeta (
     id NUMBER(7) PRIMARY KEY,
     id_accion NUMBER(7),
@@ -317,7 +305,6 @@ CREATE TABLE Tarjeta (
     FOREIGN KEY (id_tipo_tarjeta) REFERENCES Tipo_tarjeta(id)
 );
 
--- (36) Sustitucion
 CREATE TABLE Sustitucion (
     id NUMBER(7) PRIMARY KEY,
     id_accion NUMBER(7),
@@ -326,7 +313,7 @@ CREATE TABLE Sustitucion (
     FOREIGN KEY (id_tipo_sustitucion) REFERENCES Tipo_sustitucion(id)
 );
 
--- (38) Coordenada_arco
+-- No hay Datos
 CREATE TABLE Coordenada_arco (
     id NUMBER(7) PRIMARY KEY,
     id_accion NUMBER(7),
@@ -335,7 +322,7 @@ CREATE TABLE Coordenada_arco (
     FOREIGN KEY (id_accion) REFERENCES Accion(id)
 );
 
--- (30) Asistencia
+-- No hay Datos
 CREATE TABLE Asistencia (
     id NUMBER(7) PRIMARY KEY,
     id_accion NUMBER(7),
