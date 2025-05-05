@@ -1,0 +1,201 @@
+--------------------------------------------------- #1 ---------------------------------------------------
+π departamento, año, cantidad_homicidios (
+  γ dpto.nombre, ef.anio, count(*) → cantidad_homicidios (
+    σ i.id_tipo_denuncia=164 ∧ i.id_tipo_implicado=2 ∧ ef.id_tipo_evento=2 ∧ drc.id_tipo_entidad=2 (
+      Denuncia ⋈ i.id_denuncia=d.id Implicado ⋈ ef.id_denuncia=d.id Evento_Fecha ⋈ inst.id=d.id_institucion Institucion ⋈ drc.id_entidad=inst.id Direccion ⋈ m.id=drc.id_municipio Municipio ⋈ dpto.id=m.id_departamento Departamento
+    )
+  )
+)
+
+
+--------------------------------------------------- #2 ---------------------------------------------------
+π municipio, departamento, cantidad_violencia_mujer (
+  γ m.nombre, dpto.nombre, count(*) → cantidad_violencia_mujer (
+    σ i.id_tipo_denuncia=449 ∧ i.id_tipo_implicado=2 ∧ ef.id_tipo_evento=1 ∧ drc.id_tipo_entidad=2 (
+      Denuncia ⋈ i.id_denuncia=d.id Implicado ⋈ ef.id_denuncia=d.id Evento_Fecha ⋈ inst.id=d.id_institucion Institucion ⋈ drc.id_entidad=inst.id Direccion ⋈ m.id=drc.id_municipio Municipio ⋈ dpto.id=m.id_departamento Departamento
+    )
+  )
+)
+
+
+--------------------------------------------------- #3 ---------------------------------------------------
+Top_Delitos ← π delito (
+  τ total_casos DESC (
+    π td.nombre → delito, count(*) → total_casos (
+      γ td.nombre, count(*) → total_casos (
+        σ ef.id_tipo_evento=2 ∧ ef.anio ≥ (EXTRACT(YEAR FROM SYSDATE) - 5) ∧ ef.anio ≤ EXTRACT(YEAR FROM SYSDATE) (
+          Denuncia ⋈ i.id_denuncia=d.id Implicado ⋈ ef.id_denuncia=d.id Evento_Fecha ⋈ i.id_denuncia=td.id Tipo_Denuncia
+        )
+      )
+    )
+  )
+)[1...5]
+
+
+Resultado_Final ← π delito, anio, numero_casos (
+  γ td.nombre, ef.anio, count(*) → numero_casos (
+    σ ef.id_tipo_evento=1 ∧ ef.anio ≥ (EXTRACT(YEAR FROM SYSDATE) - 5) ∧ ef.anio ≤ EXTRACT(YEAR FROM SYSDATE) ∧ td.nombre ∈ Top_Delitos (
+      Denuncia ⋈ i.id_denuncia=d.id Implicado ⋈ ef.id_denuncia=d.id Evento_Fecha ⋈ i.id_denuncia=td.id Tipo_Denuncia
+    )
+  )
+)
+
+
+--------------------------------------------------- #4 ---------------------------------------------------
+π delito, año, cantidad_sentencias (
+  γ td.nombre, EXTRACT(YEAR FROM s.fecha), count(*) → cantidad_sentencias (
+    σ s.id_tipo_sentencia ∈ {1,2,3} (
+      Proceso_Judicial ⋈ d.id=pj.id_denuncia Denuncia ⋈ d.id=i.id_denuncia Implicado ⋈ td.id=i.id_tipo_denuncia Tipo_Denuncia ⋈ pj.id=s.id_proceso_judicial Sentencia
+    )
+  )
+)
+
+
+--------------------------------------------------- #5 ---------------------------------------------------
+π 'Promedio de Edades de Violencia Intrafamiliar' → violencia, AVG(TRUNC(MONTHS_BETWEEN(SYSDATE, p.fecha_nacimiento) / 12)) → edad_promedio (
+  σ i.id_tipo_denuncia=55 ∧ i.id_tipo_implicado=2 (
+    Denuncia ⋈ d.id=i.id_denuncia Implicado ⋈ p.id=i.id_persona Persona
+  )
+)
+
+
+--------------------------------------------------- #6 ---------------------------------------------------
+π region, cantidad_embarazos (
+  γ r.nombre, count(*) → cantidad_embarazos (
+    σ (TRUNC(MONTHS_BETWEEN(SYSDATE, p.fecha_nacimiento) / 12) < 19) ∧ i.id_tipo_denuncia=449 ∧ i.id_tipo_implicado=2 (
+      Denuncia ⋈ d.id=i.id_denuncia Implicado ⋈ p.id=i.id_persona Persona ⋈ p.id=ps.id_persona Perfil_Sociodemografico ⋈ m.id=ps.id_municipio_nacimiento Municipio ⋈ dpto.id=m.id_departamento Departamento ⋈ r.id=dpto.id_region Region
+    )
+  )
+)
+
+
+--------------------------------------------------- #8 ---------------------------------------------------
+π grupo_etnico, cantidad_denuncias, porcentaje (
+  ρ grupo_etnico ← CASE WHEN ps.id_grupo_etnico = 1 THEN 'Maya' WHEN ps.id_grupo_etnico = 2 THEN 'Garífuna' WHEN ps.id_grupo_etnico = 3 THEN 'Xinca' WHEN ps.id_grupo_etnico = 4 THEN 'Ladino' ELSE 'Otro' END (
+    γ grupo_etnico, count(*) → cantidad_denuncias, (count(*) * 100.0 / SUM_TOTAL) → porcentaje (
+      σ i.id_tipo_denuncia=109 ∧ i.id_tipo_implicado=2 (
+        Denuncia ⋈ d.id=i.id_denuncia Implicado ⋈ td.id=i.id_tipo_denuncia Tipo_Denuncia ⋈ p.id=i.id_persona Persona ⋈ p.id=ps.id_persona Perfil_Sociodemografico
+      )
+    )
+  )
+)
+
+
+--------------------------------------------------- #9 ---------------------------------------------------
+π indice, nivel_escolaridad, delito, cantidad_personas (
+  γ ne.id, ne.nombre, td.nombre, count(*) → cantidad_personas (
+    σ i.id_tipo_implicado=1 (
+      Implicado ⋈ p.id=i.id_persona Persona ⋈ td.id=i.id_tipo_denuncia Tipo_Denuncia ⋈ p.id=ps.id_persona Perfil_Sociodemografico ⋈ ne.id=ps.id_nivel_escolaridad Nivel_Escolaridad
+    )
+  )
+)
+
+
+--------------------------------------------------- #10 ---------------------------------------------------
+π año, cantidad_necropsias (
+  γ EXTRACT(YEAR FROM e.fecha), count(*) → cantidad_necropsias (
+    Evaluacion ⋈ e.id=rn.id_evaluacion Registro_Necropsia
+  )
+)
+
+
+--------------------------------------------------- #11 ---------------------------------------------------
+π estado_procesamiento, cantidad (
+  γ estado_procesamiento, count(*) → cantidad (
+    ρ estado_procesamiento ← CASE WHEN d.id_estado_denuncia IN (4,5,6,8,9,10,11,12,14,15,17) THEN 'Procesadas' WHEN d.id_estado_denuncia IN (1,2,3,7,13,16) THEN 'No Procesadas' END (
+      σ i.id_tipo_denuncia IN (11,69,105,109,114,122,123,201,233,236,253,255,274,293,312,325,367) (
+        Denuncia ⋈ d.id=i.id_denuncia Implicado
+      )
+    )
+  )
+)
+
+
+--------------------------------------------------- #12 ---------------------------------------------------
+π trabajo, delito, cantidad_casos (
+  γ tp.nombre, td.nombre, count(*) → cantidad_casos (
+    Implicado ⋈ p.id=i.id_persona Persona ⋈ td.id=i.id_tipo_denuncia Tipo_Denuncia ⋈ p.id=ps.id_persona Perfil_Sociodemografico ⋈ ps.id=t.id_perfil_sociodemografico Trabajo ⋈ tp.id=t.id_tipo_trabajo Tipo_Trabajo
+  )
+)
+
+
+--------------------------------------------------- #13 ---------------------------------------------------
+π delito, cantidad_sentencias_firmes (
+  γ td.nombre, count(*) → cantidad_sentencias_firmes (
+    σ s.id_tipo_sentencia IN (13,17,18) ∧ ps.id_sexo=2 ∧ i.id_tipo_implicado=2 ∧ i.id_tipo_denuncia IN (109,293,439) (
+      Implicado ⋈ p.id=i.id_persona Persona ⋈ p.id=ps.id_persona Perfil_Sociodemografico ⋈ d.id=i.id_denuncia Denuncia ⋈ td.id=i.id_tipo_denuncia Tipo_Denuncia ⋈ d.id=pj.id_denuncia Proceso_Judicial ⋈ pj.id=s.id_proceso_judicial Sentencia
+    )
+  )
+)
+
+
+--------------------------------------------------- #14 ---------------------------------------------------
+π idioma, cantidad_hablantes (
+  γ idm.nombre, count(*) → cantidad_hablantes (
+    σ i.id_tipo_denuncia=109 (
+      Implicado ⋈ p.id=i.id_persona Persona ⋈ td.id=i.id_tipo_denuncia Tipo_Denuncia ⋈ p.id=ps.id_persona Perfil_Sociodemografico ⋈ ps.id=pi.id_perfil_sociodemografico Persona_Idioma ⋈ idm.id=pi.id_idioma Idioma
+    )
+  )
+)
+
+
+--------------------------------------------------- #15 ---------------------------------------------------
+π identificado, nombre, numero_familiares (
+  γ p.id, p.primer_nombre || ' ' || p.segundo_nombre || ' ' || p.primer_apellido || ' ' || p.segundo_apellido, count(*) → numero_familiares (
+    σ i.id_tipo_denuncia=109 (
+      Implicado ⋈ p.id=i.id_persona Persona ⋈ p.id=f.id_persona Familia
+    )
+  )
+)
+
+
+--------------------------------------------------- #16 ---------------------------------------------------
+π nivel_escolaridad, cantidad_personas (
+  γ nivel_escolaridad, count(*) → cantidad_personas (
+    ρ nivel_escolaridad ← CASE WHEN ps.id_nivel_escolaridad IN (1,2,3,4,5) THEN 'Escolarizada' WHEN ps.id_nivel_escolaridad IN (6) THEN 'No Escolarizada' END (
+      σ i.id_tipo_denuncia=100 ∧ i.id_tipo_implicado=2 ∧ (TRUNC(MONTHS_BETWEEN(SYSDATE, p.fecha_nacimiento) / 12) < 18) (
+        Denuncia ⋈ d.id=i.id_denuncia Implicado ⋈ p.id=i.id_persona Persona ⋈ p.id=ps.id_persona Perfil_Sociodemografico
+      )
+    )
+  )
+)
+
+
+--------------------------------------------------- #17 ---------------------------------------------------
+π sector, cantidad_personas (
+  γ se.nombre, count(*) → cantidad_personas (
+    σ i.id_tipo_denuncia=100 ∧ i.id_tipo_implicado=1 (
+      Denuncia ⋈ d.id=i.id_denuncia Implicado ⋈ p.id=i.id_persona Persona ⋈ p.id=ps.id_persona Perfil_Sociodemografico ⋈ ps.id=t.id_perfil_sociodemografico Trabajo ⋈ se.id=t.id_sector_economico Sector_Economico
+    )
+  )
+)
+
+
+--------------------------------------------------- #18 ---------------------------------------------------
+π edades, tipo_violencia, cantidad_casos (
+  γ edades, td.nombre, count(*) → cantidad_casos (
+    ρ edades ← CASE
+        WHEN EXTRACT(YEAR FROM SYSDATE) - EXTRACT(YEAR FROM p.fecha_nacimiento) BETWEEN 0 AND 12 THEN 'Niñez (0-12)'
+        WHEN EXTRACT(YEAR FROM SYSDATE) - EXTRACT(YEAR FROM p.fecha_nacimiento) BETWEEN 13 AND 17 THEN 'Adolescencia (13-17)'
+        WHEN EXTRACT(YEAR FROM SYSDATE) - EXTRACT(YEAR FROM p.fecha_nacimiento) BETWEEN 18 AND 29 THEN 'Juventud (18-29)'
+        WHEN EXTRACT(YEAR FROM SYSDATE) - EXTRACT(YEAR FROM p.fecha_nacimiento) BETWEEN 30 AND 59 THEN 'Adultez (30-59)'
+        ELSE 'Adulto mayor (60+)'
+    END (
+      σ i.id_tipo_implicado=2 (
+        Denuncia ⋈ d.id=i.id_denuncia Implicado ⋈ p.id=i.id_persona Persona ⋈ td.id=i.id_tipo_denuncia Tipo_Denuncia
+      )
+    )
+  )
+)
+
+
+--------------------------------------------------- #19 ---------------------------------------------------
+π area, cantidad_personas (
+  γ area, count(*) → cantidad_personas (
+    ρ area ← CASE WHEN ps.id_area_geografica IN (1) THEN 'Área Urbana' WHEN ps.id_area_geografica IN (2) THEN 'Área Rural' END (
+      σ i.id_tipo_denuncia=100 (
+        Denuncia ⋈ d.id=i.id_denuncia Implicado ⋈ p.id=i.id_persona Persona ⋈ p.id=ps.id_persona Perfil_Sociodemografico
+      )
+    )
+  )
+)
